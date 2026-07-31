@@ -1,0 +1,219 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Smart Expense Tracker API",
+    "version": "1.0.0",
+    "description": "A REST API to manage personal expenses with local JSON file persistence."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/expenses": {
+      "post": {
+        "summary": "Add a new expense",
+        "description": "Creates a new expense and saves it to the database.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or validation error"
+          }
+        }
+      },
+      "get": {
+        "summary": "View all expenses",
+        "description": "Retrieves the list of expenses, optionally filtered by category.",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter expenses by category (case-insensitive)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/expenses/total": {
+      "get": {
+        "summary": "Calculate total expenses",
+        "description": "Calculates the sum of all expenses overall or for a specific category.",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter total by category (case-insensitive)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calculated total sum",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TotalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/expenses/{id}": {
+      "delete": {
+        "summary": "Delete an expense",
+        "description": "Deletes an expense from the database by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique ID of the expense",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expense successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Expense deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expense with the specified ID not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExpenseInput": {
+        "type": "object",
+        "required": [
+          "title",
+          "amount",
+          "category",
+          "date"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Grocery Shopping"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0.01,
+            "example": 45.50
+          },
+          "category": {
+            "type": "string",
+            "example": "Food"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date in YYYY-MM-DD format",
+            "example": "2026-07-31"
+          }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e305e4cb-cb12-4fbe-9b34-d13de98a39b2"
+          },
+          "title": {
+            "type": "string",
+            "example": "Grocery Shopping"
+          },
+          "amount": {
+            "type": "number",
+            "example": 45.50
+          },
+          "category": {
+            "type": "string",
+            "example": "Food"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-07-31"
+          }
+        }
+      },
+      "TotalResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "example": 85.75
+          },
+          "category": {
+            "type": "string",
+            "example": "Food"
+          }
+        }
+      }
+    }
+  }
+}
