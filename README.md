@@ -291,11 +291,12 @@ The following operations were verified:
 
 The API uses standard HTTP status codes.
 
-Status Code         Description
-200                 Request Successful
-201                 Resource created successfully
-400                 Invalid Request Data
-404                 Resource Not Found
+| Status Code | Description |
+|-------------|-------------|
+| 200 | Request successful |
+| 201 | Resource created successfully. |
+| 400 | Invalid request data |
+| 404 | Resourc not found. |
 
 ---
 
